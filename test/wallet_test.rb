@@ -1,4 +1,3 @@
-require 'pry'
 require_relative './test_helper'
 require 'fileutils'
 require_relative '../lib/wallet.rb'
