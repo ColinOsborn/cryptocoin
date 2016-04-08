@@ -1,38 +1,57 @@
 require 'pry'
-require 'minitest/autorun'
-require 'minitest/pride'
-require 'base64'
-require './lib/wallet'
+require_relative './test_helper'
+require 'fileutils'
+require_relative '../lib/wallet.rb'
 
 class WalletTest < Minitest::Test
 
-  def test_wallet_dir_exists?
-    @file_path = Dir.pwd + '/test/support/.wallet'
+  def setup
+    @file_path = Dir.pwd + "/test/support/.wallet"
+    FileUtils.rm_rf(@file_path) if File.directory?(@file_path)
   end
 
-  def teardown
-    FileUtils.rm_rf(@file_path) if File.directory?(file_path)
-  end
+  # def teardown
+  #   FileUtils.rm_rf(@file_path) if File.directory?(@file_path)
+  # end
 
   def test_can_create_wallet_directory
     refute File.directory?(@file_path)
 
     wallet = Wallet.new("/test/support")
 
-    assert File.directory(@File_path)
+    assert File.directory?(@file_path)
   end
 
-  def test_we_can_create_public_key_pem_file
-    wallet = Wallet.new('/test/support')
-    public_key_pem = @file_path + "/public_key.pem"
+  def test_can_create_public_key_pem_file
+    wallet          = Wallet.new("/test/support")
+    public_key_path = @file_path + "/public_key.pem"
 
     assert File.exist?(public_key_path)
   end
 
-  def test_we_can_create_private_key_pem_file
-    wallet = Wallet.new('/test/support')
-    private_key_pem = @file_path + "/private_key.pem"
+  def test_can_create_private_key_pem_file
+    wallet           = Wallet.new("/test/support")
+    private_key_path = @file_path + "/private_key.pem"
 
+    assert File.exist?(private_key_path)
+  end
+
+  def test_can_return_public_key
+    wallet         = Wallet.new("/test/support")
+    public_key_pem = wallet.public_key
+
+    assert wallet.public_key.include?("BEGIN PUBLIC KEY")
+  end
+
+  def test_can_create_wallet_and_public_and_private_keys
+    refute File.directory?(@file_path)
+
+    wallet           = Wallet.new("/test/support")
+    public_key_path  = @file_path + "/public_key.pem"
+    private_key_path = @file_path + "/private_key.pem"
+
+    assert File.directory?(@file_path)
+    assert File.exist?(public_key_path)
     assert File.exist?(private_key_path)
   end
 
