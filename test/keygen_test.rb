@@ -10,6 +10,7 @@ class KeyGenTest < Minitest::Test
   def test_we_can_return_public_key
     keygen = KeyGen.new
     private_key = keygen.private_key
+    assert nil, private_key
   end
 
 end
